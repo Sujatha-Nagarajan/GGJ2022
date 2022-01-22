@@ -46,7 +46,10 @@ namespace Platformer.Gameplay
             }
             else
             {
-                Schedule<PlayerDeath>();
+                // Reduce playehealth by an amount
+                player.health.ReduceHealth(0.2f);
+                //Schedule<PlayerDeath>();
+
             }
         }
     }

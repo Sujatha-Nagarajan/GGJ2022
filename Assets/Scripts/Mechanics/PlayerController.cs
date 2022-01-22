@@ -69,6 +69,7 @@ namespace Platformer.Mechanics
                 move.x = 0;
             }
             UpdateJumpState();
+            health.UpdateHealth();
             base.Update();
         }
 

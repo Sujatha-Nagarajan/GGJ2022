@@ -30,9 +30,14 @@ namespace Platformer.Mechanics
             if (Instance == this) Instance = null;
         }
 
+        void Start()
+        {
+        }
+
         void Update()
         {
             if (Instance == this) Simulation.Tick();
+            
         }
     }
 }

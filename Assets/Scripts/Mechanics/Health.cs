@@ -5,6 +5,8 @@ using static Platformer.Core.Simulation;
 
 namespace Platformer.Mechanics
 {
+    
+
     /// <summary>
     /// Represebts the current vital statistics of some game entity.
     /// </summary>
@@ -14,7 +16,17 @@ namespace Platformer.Mechanics
         /// The maximum hit points for the entity.
         /// </summary>
         public int maxHP = 1;
+        public int collectiblePoints = 0;
+        
+        public int maxCollectiblePoints = 20;
 
+        public float healthDecreaseFactorOverTime = 0.02f;
+        //0.02f works
+        float timer = 0;
+
+        float totalHealth = 0.5f;
+
+        float HEALTH_TIMER_MAX = 1f;
         /// <summary>
         /// Indicates if the entity should be considered 'alive'.
         /// </summary>
@@ -22,12 +34,28 @@ namespace Platformer.Mechanics
 
         int currentHP;
 
+        bool updateHealth = false;
+
         /// <summary>
         /// Increment the HP of the entity.
         /// </summary>
         public void Increment()
         {
             currentHP = Mathf.Clamp(currentHP + 1, 0, maxHP);
+        }
+
+        public void Collected()
+        {
+            collectiblePoints += 1;
+
+            // Increase total health by a fraction of the collectible count
+            totalHealth += GetCollectibleFraction();
+        }
+
+        //TODO: delete
+        public float GetCollectibleFraction()
+        {
+            return Mathf.Clamp((float)collectiblePoints / (float)maxCollectiblePoints, 0, 1f);
         }
 
         /// <summary>
@@ -44,17 +72,51 @@ namespace Platformer.Mechanics
             }
         }
 
+        public void ReSpawned()
+        {
+            updateHealth = true;
+            timer = 0;
+        }
         /// <summary>
         /// Decrement the HP of the entitiy until HP reaches 0.
         /// </summary>
         public void Die()
         {
             while (currentHP > 0) Decrement();
+            updateHealth = false;
         }
 
         void Awake()
         {
             currentHP = maxHP;
+            updateHealth = true;
+        }
+
+        public float GetHealth()
+        {
+            return totalHealth;
+        }
+
+        public void UpdateHealth()
+        {
+            if (updateHealth)
+            {
+                timer += Time.deltaTime;
+                if (timer >= HEALTH_TIMER_MAX)
+                {
+                    timer = 0f;
+
+                    // Decrease health by a small amount every second
+                    totalHealth -= healthDecreaseFactorOverTime;
+                    totalHealth = Mathf.Clamp(totalHealth, 0, 1f);
+                }
+            }
+        }
+
+        public void ReduceHealth(float amount)
+        {
+            // Reduce total health and keep it between 0 an 1
+            totalHealth = Mathf.Clamp(totalHealth - amount, 0, 1f);
         }
     }
 }
