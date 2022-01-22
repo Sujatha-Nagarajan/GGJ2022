@@ -109,6 +109,12 @@ namespace Platformer.Mechanics
                     // Decrease health by a small amount every second
                     totalHealth -= healthDecreaseFactorOverTime;
                     totalHealth = Mathf.Clamp(totalHealth, 0, 1f);
+
+                    if (totalHealth <= 0.5f)
+                    {
+                        LevelManager levelManager = FindObjectOfType<LevelManager>();
+                        levelManager.EndGame();
+                    }
                 }
             }
         }
