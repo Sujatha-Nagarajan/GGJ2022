@@ -110,7 +110,7 @@ namespace Platformer.Mechanics
                     totalHealth -= healthDecreaseFactorOverTime;
                     totalHealth = Mathf.Clamp(totalHealth, 0, 1f);
 
-                    if (totalHealth <= 0.5f)
+                    if (totalHealth <= 0)
                     {
                         LevelManager levelManager = FindObjectOfType<LevelManager>();
                         levelManager.EndGame();
